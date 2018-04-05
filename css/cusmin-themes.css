@@ -1,3 +1,6 @@
 .cusmin-themes-wrap{
     background: #fff;
 }
+.cusmin-themes-wrap .theme-browser .theme .theme-screenshot:after{
+    padding-top: 64%;
+}

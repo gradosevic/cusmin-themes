@@ -4,7 +4,7 @@ class CusminThemesConfiguration
     const PLUGIN_VERSION = '1.0';
 
     //Enable plugin debugging mode
-    const DEBUG = false;
+    const DEBUG = true;
 
     //const ENDPOINT = 'http://cusmin.local/';
     const ENDPOINT = 'https://cusmin.com/';

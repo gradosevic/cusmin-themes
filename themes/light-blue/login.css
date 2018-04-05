@@ -1,0 +1,70 @@
+/*colors*/
+/*
+ dark orange - #5dbaf4 ;
+ orange - #0094F0
+ very orange - 5dbaf4
+ gray orange light - #EDF8FF;
+ light orange - #EDF8FF
+ gray
+*/
+html{
+    background:none;
+}
+
+div.updated, .login .message{
+    background-color: #0094F0 !important;
+    border-color: #5dbaf4 !important;
+    color:#ffffff !important;
+}
+div.error, .login #login_error{
+    color:#0094F0 !important;
+    border-color:#0094F0 !important;
+}
+
+.login #nav a, .login #backtoblog a{
+    color:#0094F0 !important;
+    text-decoration:none;
+}
+.login label{
+    color:#ffffff !important;
+    font-size: 16px;
+}
+a{
+    color:#0094F0 !important;
+}
+a:hover{
+    color:gray !important;
+    text-decoration:none;
+}
+.login #nav a:hover, .login #backtoblog a:hover{
+    color:gray !important;
+    text-decoration:none !important;
+}
+
+body.login {
+    background: #EDF8FF !important;
+}
+.login h1 a{
+    background: none;
+}
+.login form .input, .login input[type="text"]{
+    color:#0094F0 !important;
+}
+
+.wp-core-ui .button.button-large, .wp-core-ui .button-group.button-large .button{
+    background:#ffffff ;
+    color:#0094F0 ;
+    box-shadow:none ;
+    border:none;
+    font-weight:bold;
+    text-shadow:none;
+}
+.wp-core-ui .button.button-large:hover, .wp-core-ui .button-group.button-large .button:hover{
+    background:#5dbaf4;
+    color:#ffffff;
+}
+
+.login form{
+    background:#0094F0 !important;
+    color:#ffffff !important;
+}
