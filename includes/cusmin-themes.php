@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * The core plugin class.
  *
@@ -44,9 +44,53 @@ class CusminThemes
         add_action('admin_init', array($this, 'onAdminInit'));
         add_action('admin_enqueue_scripts', array($this, 'registerScripts'));
         add_action('admin_enqueue_scripts', array($this, 'addDynamicAdminScript'));
+        add_action('wp_enqueue_scripts', array($this, 'addDynamicAdminScript'));
         add_action('login_enqueue_scripts', array($this, 'addDynamicLoginScript'));
         add_action('load-settings_page_cusmin-themes', array($this, 'onSettingsPage'));
         add_filter("plugin_action_links_" . self::SLUG . '/cusmin.php', array($this, 'pluginLinks'));
+        add_filter('query_vars',array($this, 'dynamicScript'));
+        add_action('template_redirect', array($this, 'dynamicScriptContent'));
+    }
+
+    public function dynamicScriptContent() {
+        if(intval(get_query_var('cusmin_themes_script')) == 1) {
+            header("Cache-Control: max-age=2592000"); //30 days cache
+            header("Pragma: cache");
+            try {
+                $script = '';
+                $context = 'admin';
+                //$additionalJS = '';
+
+                $options = new CusminThemesOptions();
+                $theme = $options->getActiveTheme();
+
+                //print_r($options->getOptions());
+
+                if (isset($_GET["ctx"])) {
+                    $context = $_GET["ctx"];
+                }
+
+                header('Content-type: text/css');
+                if ($context == 'admin') {
+                    if(is_user_logged_in()) {
+                        $script = $theme['admin'];
+                    }
+                    //$script = file_get_contents(plugins_url('themes/wasteland/' . 'admin.css', __FILE__));
+                } else if ($context == 'login') {
+                    $script = $theme['login'];
+                    //$script = file_get_contents(plugins_url('themes/wasteland/' . 'login.css', __FILE__));
+                }
+                echo $script;
+            } catch (\Exception $e) {
+                echo ''.$e->getCode().':'.$e->getMessage().':'.$e->getFile().':'.$e->getLine().'';
+            }
+            exit;
+        }
+    }
+
+    function dynamicScript($vars) {
+        $vars[] = 'cusmin_themes_script';
+        return $vars;
     }
 
     public function settingsPage()
@@ -114,34 +158,34 @@ class CusminThemes
 
     public function addDynamicAdminScript(){
         $o = new CusminThemesOptions();
-        wp_register_style(self::SLUG.'-ctd', plugins_url('../ctd.php?ctx=admin&ctv='.$o->getVersion(), __FILE__));
-        wp_enqueue_style(self::SLUG.'-ctd');
+        wp_register_style(self::SLUG.'-script', home_url('?cusmin_themes_script=1&ctx=admin&ctv='.$o->getVersion(), __FILE__));
+        wp_enqueue_style(self::SLUG.'-script');
     }
 
     public function addDynamicLoginScript(){
         $o = new CusminThemesOptions();
-        wp_register_style(self::SLUG.'-ctd', plugins_url('../ctd.php?ctx=login&ctv='.$o->getVersion(), __FILE__));
-        wp_enqueue_style(self::SLUG.'-ctd');
+        wp_register_style(self::SLUG.'-script', home_url('?cusmin_themes_script=1&ctx=login&ctv='.$o->getVersion(), __FILE__));
+        wp_enqueue_style(self::SLUG.'-script');
     }
 
     public function registerScripts($hook_suffix)
     {
 
-        wp_register_script(self::SLUG, plugins_url('../js/' . self::SLUG . '.js', __FILE__), array('jquery'));
+        wp_register_script(self::SLUG, plugins_url('js/' . self::SLUG . '.js', dirname(__FILE__)), array('jquery'));
         if(CusminThemesConfiguration::DEBUG){
-            wp_register_script(self::SLUG . '-vue', plugins_url('../js/vue.min.js', __FILE__), array('jquery'));
+            wp_register_script(self::SLUG . '-vue', plugins_url('js/vue.min.js', dirname(__FILE__)), array('jquery'));
         }else{
-            wp_register_script(self::SLUG . '-vue', plugins_url('../js/vue.js', __FILE__), array('jquery'));
+            wp_register_script(self::SLUG . '-vue', plugins_url('js/vue.js', dirname(__FILE__)), array('jquery'));
         }
 
         //TODO: Move to settings page
-        wp_register_script(self::SLUG . '-ct', plugins_url('../js/ct.js', __FILE__), array('jquery'));
-        wp_register_script(self::SLUG . '-ct-vue', plugins_url('../js/ct-vue.js', __FILE__), array('jquery'));
-        wp_register_style(self::SLUG, plugins_url('../css/' . self::SLUG . '.css', __FILE__));
+        wp_register_script(self::SLUG . '-ct', plugins_url('js/ct.js', dirname(__FILE__)), array('jquery'));
+        wp_register_script(self::SLUG . '-ct-vue', plugins_url('js/ct-vue.js', dirname(__FILE__)), array('jquery'));
+        wp_register_style(self::SLUG, plugins_url('css/' . self::SLUG . '.css', dirname(__FILE__)));
 
 
         if ($hook_suffix == 'settings_page_cusmin-themes') {
-            wp_register_style(self::SLUG . '-settings', plugins_url('../css/' . self::SLUG . '-settings' . '.css', __FILE__));
+            wp_register_style(self::SLUG . '-settings', plugins_url('css/' . self::SLUG . '-settings' . '.css', dirname(__FILE__)));
             wp_enqueue_style(self::SLUG . '-settings');
         }
 

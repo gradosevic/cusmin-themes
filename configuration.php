@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 class CusminThemesConfiguration
 {
     const PLUGIN_VERSION = '1.0';

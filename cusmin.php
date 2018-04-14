@@ -1,5 +1,5 @@
 <?php
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 /**
  * @wordpress-plugin
  * Plugin Name:       Cusmin Themes
